@@ -1,1 +1,1 @@
-#Kuberenetes-Practice
+# Kubernetes-Practice
