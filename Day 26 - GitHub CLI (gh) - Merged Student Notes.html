@@ -1,0 +1,2866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Day 26 — GitHub CLI (gh) — Complete Student Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Kalam:wght@400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #2b3a55;
+  --paper: #fffdf6;
+  --paper2: #fbf7ec;
+  --pencil: #5b6b8c;
+  --accent1: #ffd166;
+  --accent2: #ef476f;
+  --accent3: #06d6a0;
+  --accent4: #118ab2;
+  --line: #e3d9bd;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #efe9d8;
+  background-image:
+    linear-gradient(#efe9d8 0px, transparent 0px);
+  font-family: 'Kalam', 'Patrick Hand', cursive, sans-serif;
+  color: var(--ink);
+}
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 30px 20px 80px;
+}
+.cover {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  padding: 40px 30px;
+  text-align: center;
+  position: relative;
+  box-shadow: 6px 6px 0 rgba(43,58,85,0.15);
+  transform: rotate(-0.4deg);
+}
+.cover h1 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 44px;
+  margin: 6px 0;
+}
+.cover .subtitle {
+  font-size: 20px;
+  color: var(--pencil);
+}
+.cover .badge {
+  display: inline-block;
+  background: var(--accent1);
+  border: 2px solid var(--ink);
+  border-radius: 30px;
+  padding: 6px 18px;
+  font-size: 15px;
+  margin-top: 14px;
+  transform: rotate(1deg);
+}
+.toc {
+  background: var(--paper2);
+  border: 2px dashed var(--ink);
+  border-radius: 12px;
+  margin-top: 26px;
+  padding: 20px 26px;
+}
+.toc h2 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 24px;
+  margin-top: 0;
+}
+.toc ul { list-style: none; padding-left: 0; }
+.toc li { margin: 10px 0; font-size: 18px; }
+.toc a { color: var(--ink); text-decoration: none; border-bottom: 2px dotted var(--pencil); }
+.toc-num {
+  display: inline-block;
+  background: var(--accent4);
+  color: white;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-right: 8px;
+}
+.part { margin-top: 60px; }
+.part-banner {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 12px;
+  padding: 18px 26px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  transform: rotate(-0.3deg);
+}
+.part-tag {
+  font-family: 'Fira Code', monospace;
+  background: var(--accent2);
+  color: white;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+.part-title {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 30px;
+  margin: 0;
+}
+.learn-box {
+  background: #fff9e6;
+  border: 2px solid var(--accent1);
+  border-left: 8px solid var(--accent1);
+  border-radius: 10px;
+  padding: 16px 22px;
+  margin-top: 20px;
+}
+.learn-box-head {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+.learn-box ul { margin: 0; padding-left: 22px; }
+.learn-box li { margin: 6px 0; font-size: 16px; }
+.diagram-card {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  margin-top: 20px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: 4px 4px 0 rgba(43,58,85,0.12);
+}
+.diagram-label {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 16px;
+  color: var(--pencil);
+  margin-bottom: 6px;
+}
+.diagram-card svg { max-width: 100%; height: auto; }
+.original-notes {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 22px 28px;
+}
+.original-tag {
+  display: inline-block;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  color: var(--pencil);
+  background: var(--paper2);
+  border: 1px solid var(--line);
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+.original-notes h2 { font-size: 22px; border-bottom: 2px solid var(--line); padding-bottom: 6px; margin-top: 30px; }
+.original-notes h3 { font-size: 18px; color: var(--pencil); margin-top: 22px; }
+.original-notes hr { border: none; border-top: 1px dashed var(--line); margin: 22px 0; }
+.original-notes p, .original-notes li { font-size: 16px; line-height: 1.55; }
+.original-notes table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 15px; }
+.original-notes th, .original-notes td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
+.original-notes th { background: var(--paper2); }
+.original-notes pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 14px 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.original-notes code { font-family: 'Fira Code', monospace; }
+.original-notes p code { background: var(--paper2); padding: 1px 6px; border-radius: 4px; }
+.part-divider { border: none; border-top: 3px dotted var(--line); margin: 50px 0; }
+.footer-note {
+  text-align: center;
+  color: var(--pencil);
+  margin-top: 60px;
+  font-size: 15px;
+}
+@media (max-width: 640px) {
+  .cover h1 { font-size: 30px; }
+  .part-title { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="cover">
+    <div class="badge">DevOps 100 Days Challenge</div>
+    <h1>📓 Day 26 — GitHub CLI (gh)</h1>
+    <div class="subtitle">Complete Merged Student Notes · Parts 1 → 4B</div>
+    <div class="subtitle">Repos · Issues &amp; PRs · Actions Workflows &amp; Runs · API &amp; Gists · Releases, Aliases &amp; Search</div>
+  </div>
+
+  <div class="toc">
+    <h2>🗂️ Table of Contents</h2>
+    <ul>
+      <li><a href="#part1"><span class="toc-num">Part 1</span> — GitHub CLI Basics — Setup, Auth & Repos</a></li>
+<li><a href="#part2"><span class="toc-num">Part 2</span> — GitHub Issues & Pull Requests</a></li>
+<li><a href="#part3a"><span class="toc-num">Part 3A</span> — GitHub Actions Workflows (gh workflow)</a></li>
+<li><a href="#part3b"><span class="toc-num">Part 3B</span> — GitHub Actions Runs (gh run)</a></li>
+<li><a href="#part4a"><span class="toc-num">Part 4A</span> — gh api & gh gist</a></li>
+<li><a href="#part4b"><span class="toc-num">Part 4B</span> — gh release, gh alias & gh search repos</a></li>
+    </ul>
+  </div>
+
+  
+<section class="part" id="part1">
+  <div class="part-banner">
+    <span class="part-tag">Part 1</span>
+    <h1 class="part-title">GitHub CLI Basics — Setup, Auth & Repos</h1>
+  </div>
+
+  <div class="learn-box">
+    <div class="learn-box-head">🎯 What You'll Learn in This Part</div>
+    <ul><li>What GitHub CLI (<code>gh</code>) is and why DevOps engineers use it instead of the website</li>
+<li>How to install <code>gh</code> and verify it with <code>gh --version</code></li>
+<li>How to log in with <code>gh auth login</code> and check status with <code>gh auth status</code></li>
+<li>How to safely handle and protect your GitHub token</li>
+<li>How to create, clone, list, view, and delete repositories from the terminal</li>
+<li>How to fix the classic <code>HTTP 403 delete_repo</code> permission error</li></ul>
+  </div>
+
+  <div class="diagram-card">
+    <div class="diagram-label">✍️ Hand-drawn Recap Diagram</div>
+    <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg" class="handdrawn-diagram">
+<defs><filter id="sketchy" x="-8%" y="-8%" width="116%" height="116%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="1"/>
+  <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+<marker id="arrowhead1" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+<polygon points="0 0, 8 3.5, 0 7" fill="#2b3a55"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="900" height="260" fill="#fffdf6"/>
+<text x="30" y="35" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="22" fill="#2b3a55" font-weight="bold">My gh Journey — Getting Started 🗺️</text><g filter="url(#sketchy)">
+<rect x="30" y="90" width="190" height="90" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="125.0" y="130.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">Install gh</text>
+<text x="125.0" y="152.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">(apt install gh)</text>
+<g filter="url(#sketchy)">
+<rect x="240" y="90" width="190" height="90" rx="10" fill="#118ab2" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="335.0" y="130.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">gh auth login</text>
+<text x="335.0" y="152.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">(connect account)</text>
+<g filter="url(#sketchy)">
+<rect x="450" y="90" width="190" height="90" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="545.0" y="130.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">gh repo create</text>
+<text x="545.0" y="152.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">--clone --add-readme</text>
+<g filter="url(#sketchy)">
+<rect x="660" y="90" width="190" height="90" rx="10" fill="#ef476f" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="755.0" y="130.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">Manage repo:</text>
+<text x="755.0" y="152.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">issues / PRs / releases</text>
+<g filter="url(#sketchy)">
+<path d="M220 135.0 L240 135.0" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead1)"/>
+</g>
+<g filter="url(#sketchy)">
+<path d="M430 135.0 L450 135.0" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead1)"/>
+</g>
+<g filter="url(#sketchy)">
+<path d="M640 135.0 L660 135.0" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead1)"/>
+</g>
+<text x="450.0" y="220" text-anchor="middle" font-family="Patrick Hand, cursive" font-size="14" fill="#5b6b8c">Tip: gh auth status shows if you are logged in ✓</text></svg>
+  </div>
+
+  <div class="original-notes">
+    <div class="original-tag">📖 Original Notes — Part 1 (unchanged)</div>
+    <h2 id="day-26-github-cli-gh-notes-part-1">Day 26 – GitHub CLI
+(<code>gh</code>) Notes (Part 1)</h2>
+<h2 id="github-cli-manage-github-from-your-terminal">GitHub CLI: Manage
+GitHub from Your Terminal</h2>
+<hr />
+<h2 id="what-is-github-cli">What is GitHub CLI?</h2>
+<p>GitHub CLI (<code>gh</code>) is the official command-line tool
+developed by GitHub that allows you to interact with GitHub directly
+from your terminal.</p>
+<p>Instead of opening the GitHub website to create repositories, issues,
+pull requests, or run workflows, you can do everything from the command
+line.</p>
+<hr />
+<h2 id="why-use-github-cli">Why Use GitHub CLI?</h2>
+<ul>
+<li>Faster than using the GitHub website.</li>
+<li>Ideal for DevOps automation.</li>
+<li>Integrates easily with shell scripts and CI/CD pipelines.</li>
+<li>Helps manage repositories, pull requests, issues, releases, and
+GitHub Actions from one place.</li>
+</ul>
+<hr />
+<h2 id="installation">Installation</h2>
+<h3 id="ubuntu">Ubuntu</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install gh</span></code></pre></div>
+<h3 id="verify-installation">Verify Installation</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> <span class="at">--version</span></span></code></pre></div>
+<p>Example:</p>
+<pre class="text"><code>gh version 2.xx.x
+https://github.com/cli/cli/releases</code></pre>
+<hr />
+<h2 id="authentication">Authentication</h2>
+<h3 id="login">Login</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth login</span></code></pre></div>
+<p>Choose:</p>
+<pre class="text"><code>GitHub.com
+SSH
+Login with a web browser</code></pre>
+<hr />
+<h3 id="check-login-status">Check Login Status</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth status</span></code></pre></div>
+<p>Example:</p>
+<pre class="text"><code>github.com
+
+✓ Logged in to github.com account alank8s-cloud-code
+
+Active account: true
+Git operations protocol: ssh
+Token scopes:
+repo
+gist
+read:org</code></pre>
+<hr />
+<h2 id="view-your-token-scopes">View Your Token Scopes</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth status</span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth status <span class="at">-t</span></span></code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> <code>-t</code> displays the token. Avoid
+using it when sharing your screen or terminal because the token is
+sensitive.</p>
+</blockquote>
+<hr />
+<h2 id="add-more-permissions">Add More Permissions</h2>
+<p>Example: Add permission to delete repositories.</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth refresh <span class="at">-h</span> github.com <span class="at">-s</span> delete_repo</span></code></pre></div>
+<h4 id="meaning">Meaning</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gh auth refresh</code></td>
+<td>Update your existing authentication</td>
+</tr>
+<tr class="even">
+<td><code>-h github.com</code></td>
+<td>GitHub host</td>
+</tr>
+<tr class="odd">
+<td><code>-s delete_repo</code></td>
+<td>Request the <code>delete_repo</code> permission</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="protect-your-github-token">Protect Your GitHub Token</h2>
+<ul>
+<li>Never upload your token to GitHub.</li>
+<li>Never share screenshots showing the token.</li>
+<li>Avoid using <code>gh auth status -t</code> during presentations or
+recordings.</li>
+<li>Store tokens securely.</li>
+<li>Revoke tokens immediately if they are exposed.</li>
+</ul>
+<hr />
+<h2 id="repository-management">Repository Management</h2>
+<hr />
+<h2 id="create-a-repository">Create a Repository</h2>
+<h3 id="syntax">Syntax</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo create <span class="op">&lt;</span>repository-name<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="example">Example</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo create my_portfolio <span class="at">--public</span> <span class="at">--clone</span> <span class="at">--add-readme</span></span></code></pre></div>
+<h4 id="options">Options</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--public</code></td>
+<td>Public repository</td>
+</tr>
+<tr class="even">
+<td><code>--private</code></td>
+<td>Private repository</td>
+</tr>
+<tr class="odd">
+<td><code>--clone</code></td>
+<td>Clone immediately after creation</td>
+</tr>
+<tr class="even">
+<td><code>--add-readme</code></td>
+<td>Create a README.md</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="clone-a-repository">Clone a Repository</h2>
+<h3 id="what-is-gh-repo-clone">What is <code>gh repo clone</code>?</h3>
+<p>It downloads a GitHub repository to your local computer.</p>
+<hr />
+<h3 id="syntax-1">Syntax</h3>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo clone OWNER/REPOSITORY</span></code></pre></div>
+<hr />
+<h3 id="example-1">Example</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo clone alank8s-cloud-code/my_portfolio</span></code></pre></div>
+<p>GitHub CLI automatically knows:</p>
+<ul>
+<li>Repository owner</li>
+<li>Clone URL</li>
+<li>Authentication method</li>
+</ul>
+<p>Equivalent Git command:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:alank8s-cloud-code/my_portfolio.git</span></code></pre></div>
+<hr />
+<h2 id="list-your-repositories">List Your Repositories</h2>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo list</span></code></pre></div>
+<p>Limit the number of results:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo list <span class="at">--limit</span> 10</span></code></pre></div>
+<hr />
+<h2 id="view-repository-details">View Repository Details</h2>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo view alank8s-cloud-code/my_portfolio</span></code></pre></div>
+<p>Useful JSON output:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo view alank8s-cloud-code/my_portfolio <span class="dt">\</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>--json name,description,isPrivate,defaultBranchRef</span></code></pre></div>
+<hr />
+<h2 id="open-repository-in-browser">Open Repository in Browser</h2>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo view alank8s-cloud-code/my_portfolio <span class="at">--web</span></span></code></pre></div>
+<h4 id="wsl-error">WSL Error</h4>
+<p>Sometimes you may see:</p>
+<pre class="text"><code>xdg-open: no method available for opening ...</code></pre>
+<h4 id="reason">Reason</h4>
+<p>WSL doesn’t have a Linux web browser installed.</p>
+<h4 id="solution">Solution</h4>
+<p>Copy the URL and open it in your Windows browser, or configure WSL to
+launch Windows applications.</p>
+<hr />
+<h2 id="delete-a-repository">Delete a Repository</h2>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo delete OWNER/REPOSITORY</span></code></pre></div>
+<p>Example:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo delete alank8s-cloud-code/practice</span></code></pre></div>
+<p>Skip the confirmation prompt:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo delete alank8s-cloud-code/practice <span class="at">--yes</span></span></code></pre></div>
+<hr />
+<h2 id="common-error">Common Error</h2>
+<pre class="text"><code>HTTP 403:
+Must have admin rights to Repository.</code></pre>
+<h4 id="reason-1">Reason</h4>
+<p>Your token does not include the <code>delete_repo</code> scope.</p>
+<h4 id="fix">Fix</h4>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth refresh <span class="at">-h</span> github.com <span class="at">-s</span> delete_repo</span></code></pre></div>
+<hr />
+<h2 id="useful-repository-commands">Useful Repository Commands</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Create repo</td>
+<td><code>gh repo create myrepo</code></td>
+</tr>
+<tr class="even">
+<td>Clone repo</td>
+<td><code>gh repo clone owner/repo</code></td>
+</tr>
+<tr class="odd">
+<td>List repos</td>
+<td><code>gh repo list</code></td>
+</tr>
+<tr class="even">
+<td>View repo</td>
+<td><code>gh repo view owner/repo</code></td>
+</tr>
+<tr class="odd">
+<td>Open in browser</td>
+<td><code>gh repo view owner/repo --web</code></td>
+</tr>
+<tr class="even">
+<td>Delete repo</td>
+<td><code>gh repo delete owner/repo</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="real-devops-example">Real DevOps Example</h2>
+<p>A DevOps engineer needs a new repository for infrastructure code.</p>
+<p>Create the repository:</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo create terraform-infra <span class="dt">\</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>--public <span class="dt">\</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>--clone <span class="dt">\</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>--add-readme</span></code></pre></div>
+<p>Result:</p>
+<ul>
+<li>Repository is created on GitHub.</li>
+<li>README.md is added automatically.</li>
+<li>Repository is cloned to the local machine.</li>
+<li>Ready for Terraform code and CI/CD pipelines.</li>
+</ul>
+<hr />
+<h2 id="interview-questions">Interview Questions</h2>
+<h3 id="q1.-what-is-github-cli">Q1. What is GitHub CLI?</h3>
+<p><strong>Answer:</strong></p>
+<p>GitHub CLI (<code>gh</code>) is the official command-line interface
+for GitHub. It allows developers and DevOps engineers to manage
+repositories, issues, pull requests, releases, workflows, and other
+GitHub resources directly from the terminal.</p>
+<hr />
+<h3 id="q2.-why-is-github-cli-useful-for-devops">Q2. Why is GitHub CLI
+useful for DevOps?</h3>
+<p><strong>Answer:</strong></p>
+<p>GitHub CLI enables automation and scripting of GitHub tasks. It
+reduces the need to use the web interface and integrates well with shell
+scripts, CI/CD pipelines, and infrastructure automation.</p>
+<hr />
+<h3 id="commands-cheat-sheet">Commands Cheat Sheet</h3>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify installation</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> <span class="at">--version</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Login</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth login</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Authentication status</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth status</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># View token scopes</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth status <span class="at">-t</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Refresh token permissions</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth refresh <span class="at">-h</span> github.com <span class="at">-s</span> delete_repo</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Create repository</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo create myrepo <span class="at">--public</span> <span class="at">--clone</span> <span class="at">--add-readme</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone repository</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo clone owner/repo</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="co"># List repositories</span></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo list</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="co"># View repository</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo view owner/repo</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Open repository in browser</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo view owner/repo <span class="at">--web</span></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Delete repository</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> repo delete owner/repo <span class="at">--yes</span></span></code></pre></div>
+
+  </div>
+</section>
+
+<hr class='part-divider'/>
+
+<section class="part" id="part2">
+  <div class="part-banner">
+    <span class="part-tag">Part 2</span>
+    <h1 class="part-title">GitHub Issues & Pull Requests</h1>
+  </div>
+
+  <div class="learn-box">
+    <div class="learn-box-head">🎯 What You'll Learn in This Part</div>
+    <ul><li>What an Issue is and how to create/list/close/reopen one with <code>gh issue</code></li>
+<li>How to automate issue creation from a Bash script (e.g. for backup failure alerts)</li>
+<li>What a Pull Request is and the full branch → commit → push → PR flow</li>
+<li>The meaning of <b>base</b> vs <b>head</b> branch in a PR</li>
+<li>How to review someone else's PR: <code>checkout</code>, <code>diff</code>, <code>review --approve</code></li>
+<li>The three merge strategies: merge commit, squash, and rebase</li></ul>
+  </div>
+
+  <div class="diagram-card">
+    <div class="diagram-label">✍️ Hand-drawn Recap Diagram</div>
+    <svg viewBox="0 0 640 760" xmlns="http://www.w3.org/2000/svg" class="handdrawn-diagram">
+<defs><filter id="sketchy" x="-8%" y="-8%" width="116%" height="116%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="2"/>
+  <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+<marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+<polygon points="0 0, 8 3.5, 0 7" fill="#2b3a55"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="640" height="760" fill="#fffdf6"/>
+<text x="30" y="35" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="22" fill="#2b3a55" font-weight="bold">Pull Request Journey 🔀</text><g filter="url(#sketchy)">
+<rect x="130.0" y="65" width="380" height="72" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="320.0" y="96.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">git checkout -b</text>
+<text x="320.0" y="118.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">feature/update-readme</text>
+<g filter="url(#sketchy)">
+<rect x="130.0" y="155" width="380" height="72" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="320.0" y="186.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">Edit files</text>
+<text x="320.0" y="208.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">(nano README.md)</text>
+<g filter="url(#sketchy)">
+<path d="M320.0 137 L320.0 155" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead2)"/>
+</g>
+<g filter="url(#sketchy)">
+<rect x="130.0" y="245" width="380" height="72" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="320.0" y="287.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">git add . && git commit</text>
+<g filter="url(#sketchy)">
+<path d="M320.0 227 L320.0 245" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead2)"/>
+</g>
+<g filter="url(#sketchy)">
+<rect x="130.0" y="335" width="380" height="72" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="320.0" y="366.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">git push origin</text>
+<text x="320.0" y="388.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">feature/update-readme</text>
+<g filter="url(#sketchy)">
+<path d="M320.0 317 L320.0 335" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead2)"/>
+</g>
+<g filter="url(#sketchy)">
+<rect x="130.0" y="425" width="380" height="72" rx="10" fill="#118ab2" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="320.0" y="456.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">gh pr create</text>
+<text x="320.0" y="478.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">--base main --head feature/*</text>
+<g filter="url(#sketchy)">
+<path d="M320.0 407 L320.0 425" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead2)"/>
+</g>
+<g filter="url(#sketchy)">
+<rect x="130.0" y="515" width="380" height="72" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="320.0" y="546.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">Reviewer:</text>
+<text x="320.0" y="568.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">gh pr checkout / diff</text>
+<g filter="url(#sketchy)">
+<path d="M320.0 497 L320.0 515" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead2)"/>
+</g>
+<g filter="url(#sketchy)">
+<rect x="130.0" y="605" width="380" height="72" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="320.0" y="636.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">gh pr review</text>
+<text x="320.0" y="658.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">--approve</text>
+<g filter="url(#sketchy)">
+<path d="M320.0 587 L320.0 605" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead2)"/>
+</g>
+<g filter="url(#sketchy)">
+<rect x="130.0" y="695" width="380" height="72" rx="10" fill="#ef476f" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="320.0" y="726.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">gh pr merge --squash</text>
+<text x="320.0" y="748.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">--delete-branch</text>
+<g filter="url(#sketchy)">
+<path d="M320.0 677 L320.0 695" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead2)"/>
+</g>
+</svg>
+  </div>
+
+  <div class="original-notes">
+    <div class="original-tag">📖 Original Notes — Part 2 (unchanged)</div>
+    <h2 id="day-26-github-cli-gh-notes-part-2">Day 26 – GitHub CLI
+(<code>gh</code>) Notes (Part 2)</h2>
+<h2 id="github-issues-pull-requests">GitHub Issues &amp; Pull
+Requests</h2>
+<hr />
+<h2 id="github-issues">GitHub Issues</h2>
+<h3 id="what-is-an-issue">What is an Issue?</h3>
+<p>A GitHub Issue is used to track bugs, feature requests, tasks, or
+improvements in a repository.</p>
+<p>Instead of discussing work in chats or emails, teams create issues so
+everyone can track progress.</p>
+<hr />
+<h2 id="real-devops-example">Real DevOps Example</h2>
+<p>A monitoring pipeline fails because the README instructions are
+outdated.</p>
+<p>Instead of sending a message in Slack, create an issue:</p>
+<pre class="text"><code>Title:
+Fix README formatting
+
+Body:
+The README contains formatting errors that need to be corrected.
+
+Label:
+documentation</code></pre>
+<hr />
+<h2 id="create-an-issue">Create an Issue</h2>
+<h3 id="syntax">Syntax</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue create <span class="at">--repo</span> OWNER/REPO</span></code></pre></div>
+<hr />
+<h3 id="example">Example</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue create <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>--repo alank8s-cloud-code/my_portfolio <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>--title <span class="st">&quot;Fix README formatting&quot;</span> <span class="dt">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>--body <span class="st">&quot;The README contains formatting errors that need to be corrected.&quot;</span> <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>--label <span class="st">&quot;documentation&quot;</span></span></code></pre></div>
+<p>Output:</p>
+<pre class="text"><code>https://github.com/alank8s-cloud-code/my_portfolio/issues/1</code></pre>
+<hr />
+<h2 id="verify-the-issue">Verify the Issue</h2>
+<h3 id="method-1">Method 1</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue list <span class="at">--repo</span> alank8s-cloud-code/my_portfolio</span></code></pre></div>
+<p>Example:</p>
+<pre class="text"><code>#1 Fix README formatting</code></pre>
+<hr />
+<h3 id="method-2">Method 2</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue view 1 <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>--repo alank8s-cloud-code/my_portfolio</span></code></pre></div>
+<hr />
+<h3 id="method-3">Method 3</h3>
+<p>Open the issue in your browser.</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue view 1 <span class="dt">\</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>--repo alank8s-cloud-code/my_portfolio <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>--web</span></code></pre></div>
+<hr />
+<h2 id="list-open-issues">List Open Issues</h2>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue list <span class="dt">\</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>--repo alank8s-cloud-code/my_portfolio</span></code></pre></div>
+<hr />
+<h2 id="close-an-issue">Close an Issue</h2>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue close 1 <span class="dt">\</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>--repo alank8s-cloud-code/my_portfolio</span></code></pre></div>
+<hr />
+<h2 id="reopen-an-issue">Reopen an Issue</h2>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue reopen 1 <span class="dt">\</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>--repo alank8s-cloud-code/my_portfolio</span></code></pre></div>
+<hr />
+<h2 id="common-error">Common Error</h2>
+<pre class="text"><code>HTTP 401: Bad credentials</code></pre>
+<p>Reason:</p>
+<p>The GitHub token is invalid or missing.</p>
+<p>Fix:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth login</span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> auth refresh</span></code></pre></div>
+<hr />
+<h2 id="automating-issues">Automating Issues</h2>
+<p>Create an issue from a Bash script:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue create <span class="dt">\</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>--repo alank8s-cloud-code/my_portfolio <span class="dt">\</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>--title <span class="st">&quot;Daily Backup Failed&quot;</span> <span class="dt">\</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>--body <span class="st">&quot;The backup job failed during nightly execution.&quot;</span> <span class="dt">\</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>--label <span class="st">&quot;bug&quot;</span></span></code></pre></div>
+<p>Example use cases:</p>
+<ul>
+<li>Backup failures</li>
+<li>Server outages</li>
+<li>Disk space alerts</li>
+<li>Security scan findings</li>
+<li>Deployment failures</li>
+</ul>
+<hr />
+<h2 id="pull-requests">Pull Requests</h2>
+<hr />
+<h2 id="what-is-a-pull-request">What is a Pull Request?</h2>
+<p>A Pull Request (PR) is a request to merge changes from one branch
+into another.</p>
+<p>Usually:</p>
+<pre class="text"><code>feature branch
+        │
+        ▼
+      main</code></pre>
+<hr />
+<h2 id="real-devops-workflow">Real DevOps Workflow</h2>
+<pre class="text"><code>main
+ │
+ ├───────────────┐
+ │               │
+ ▼               │
+feature/update-readme
+ │
+ ▼
+Edit README
+ │
+ ▼
+Commit
+ │
+ ▼
+Push
+ │
+ ▼
+Create Pull Request
+ │
+ ▼
+Review
+ │
+ ▼
+Merge</code></pre>
+<hr />
+<h2 id="step-1-create-a-branch">Step 1: Create a Branch</h2>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> feature/update-readme</span></code></pre></div>
+<hr />
+<h2 id="step-2-make-changes">Step 2: Make Changes</h2>
+<p>Example:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> README.md</span></code></pre></div>
+<hr />
+<h2 id="step-3-commit">Step 3: Commit</h2>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">&quot;Update README with GitHub CLI example&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="step-4-push">Step 4: Push</h2>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin feature/update-readme</span></code></pre></div>
+<hr />
+<h2 id="step-5-create-pull-request">Step 5: Create Pull Request</h2>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr create <span class="dt">\</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>--title <span class="st">&quot;Update README with GitHub CLI example&quot;</span> <span class="dt">\</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>--body <span class="st">&quot;Added GitHub CLI usage examples.&quot;</span> <span class="dt">\</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>--base main <span class="dt">\</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>--head feature/update-readme</span></code></pre></div>
+<hr />
+<h2 id="understanding-base-and-head">Understanding Base and Head</h2>
+<pre class="text"><code>Head Branch
+feature/update-readme
+
+Base Branch
+main</code></pre>
+<p>Meaning:</p>
+<pre class="text"><code>feature/update-readme
+        │
+        ▼
+      main</code></pre>
+<p>The changes will be merged into <strong>main</strong>.</p>
+<hr />
+<h2 id="verify-base-branch">Verify Base Branch</h2>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr view 3 <span class="dt">\</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>--json baseRefName,headRefName</span></code></pre></div>
+<p>Example:</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;baseRefName&quot;</span><span class="fu">:</span> <span class="st">&quot;main&quot;</span><span class="fu">,</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;headRefName&quot;</span><span class="fu">:</span> <span class="st">&quot;feature/update-readme&quot;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<hr />
+<h2 id="list-pull-requests">List Pull Requests</h2>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr list</span></code></pre></div>
+<hr />
+<h2 id="view-pull-request">View Pull Request</h2>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr view 3</span></code></pre></div>
+<p>Useful JSON output:</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr view 3 <span class="dt">\</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>--json number,title,state</span></code></pre></div>
+<hr />
+<h2 id="review-someone-elses-pr">Review Someone Else’s PR</h2>
+<p>List PRs:</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr list</span></code></pre></div>
+<p>Checkout the PR:</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr checkout 5</span></code></pre></div>
+<p>View code changes:</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr diff 5</span></code></pre></div>
+<p>Approve:</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr review 5 <span class="at">--approve</span></span></code></pre></div>
+<p>Request changes:</p>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr review 5 <span class="dt">\</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>--request-changes <span class="dt">\</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>--body <span class="st">&quot;Please update the Dockerfile.&quot;</span></span></code></pre></div>
+<p>Comment:</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr review 5 <span class="dt">\</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>--comment <span class="dt">\</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>--body <span class="st">&quot;Looks good overall.&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="merge-pull-request">Merge Pull Request</h2>
+<p>Merge commit:</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr merge 3 <span class="at">--merge</span></span></code></pre></div>
+<p>Squash merge:</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr merge 3 <span class="at">--squash</span></span></code></pre></div>
+<p>Rebase merge:</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr merge 3 <span class="at">--rebase</span></span></code></pre></div>
+<p>Delete branch after merging:</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr merge 3 <span class="dt">\</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>--merge <span class="dt">\</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>--delete-branch</span></code></pre></div>
+<hr />
+<h2 id="merge-strategies">Merge Strategies</h2>
+<h3 id="merge-commit">Merge Commit</h3>
+<pre class="text"><code>main
+ │
+ ├── A
+ ├── Merge Commit
+ │    ├── B
+ │    └── C</code></pre>
+<hr />
+<h3 id="squash-merge">Squash Merge</h3>
+<pre class="text"><code>main
+ │
+ ├── A
+ ├── One Squashed Commit</code></pre>
+<hr />
+<h3 id="rebase-merge">Rebase Merge</h3>
+<pre class="text"><code>main
+ │
+ ├── A
+ ├── B
+ ├── C</code></pre>
+<p>No merge commit is created.</p>
+<hr />
+<h2 id="update-local-main">Update Local Main</h2>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull origin main</span></code></pre></div>
+<hr />
+<h2 id="common-error-1">Common Error</h2>
+<pre class="text"><code>fatal:
+not a git repository</code></pre>
+<p>Reason:</p>
+<p>You are not inside a Git repository.</p>
+<p>Fix:</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> my_portfolio</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span></span></code></pre></div>
+<p>Verify:</p>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span> .git</span></code></pre></div>
+<hr />
+<h2 id="graphql-warning">GraphQL Warning</h2>
+<pre class="text"><code>Projects (classic) is being deprecated</code></pre>
+<p>This is a GitHub warning.</p>
+<p>It does <strong>not</strong> affect your pull request or issue.</p>
+<p>You can safely ignore it.</p>
+<hr />
+<h2 id="useful-pr-commands">Useful PR Commands</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Create PR</td>
+<td><code>gh pr create</code></td>
+</tr>
+<tr class="even">
+<td>List PRs</td>
+<td><code>gh pr list</code></td>
+</tr>
+<tr class="odd">
+<td>View PR</td>
+<td><code>gh pr view 3</code></td>
+</tr>
+<tr class="even">
+<td>Checkout PR</td>
+<td><code>gh pr checkout 3</code></td>
+</tr>
+<tr class="odd">
+<td>Show diff</td>
+<td><code>gh pr diff 3</code></td>
+</tr>
+<tr class="even">
+<td>Approve PR</td>
+<td><code>gh pr review 3 --approve</code></td>
+</tr>
+<tr class="odd">
+<td>Merge PR</td>
+<td><code>gh pr merge 3 --merge</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="real-devops-example-1">Real DevOps Example</h2>
+<p>Developer pushes a new Dockerfile update.</p>
+<pre class="text"><code>feature/docker-update
+        │
+        ▼
+Create Pull Request
+        │
+        ▼
+Reviewer checks:
+
+✔ Docker build
+✔ Security scan
+✔ Linting
+✔ README
+        │
+        ▼
+Approve
+        │
+        ▼
+Merge into main</code></pre>
+<hr />
+<h2 id="interview-questions">Interview Questions</h2>
+<h3
+id="q1.-what-is-the-difference-between-an-issue-and-a-pull-request">Q1.
+What is the difference between an Issue and a Pull Request?</h3>
+<p><strong>Answer:</strong></p>
+<p>An Issue is used to track work such as bugs, feature requests, or
+tasks. A Pull Request is used to propose code changes and request that
+they be reviewed and merged into another branch.</p>
+<hr />
+<h3 id="q2.-what-merge-strategies-does-github-support">Q2. What merge
+strategies does GitHub support?</h3>
+<p><strong>Answer:</strong></p>
+<ul>
+<li>Merge Commit (<code>--merge</code>)</li>
+<li>Squash Merge (<code>--squash</code>)</li>
+<li>Rebase Merge (<code>--rebase</code>)</li>
+</ul>
+<hr />
+<h3 id="q3.-how-do-you-review-someone-elses-pull-request">Q3. How do you
+review someone else’s Pull Request?</h3>
+<p><strong>Answer:</strong></p>
+<ol type="1">
+<li>List pull requests with <code>gh pr list</code>.</li>
+<li>View the PR using <code>gh pr view</code>.</li>
+<li>Check out the branch with <code>gh pr checkout</code>.</li>
+<li>Review the changes using <code>gh pr diff</code>.</li>
+<li>Approve, comment, or request changes using
+<code>gh pr review</code>.</li>
+</ol>
+<hr />
+<h2 id="commands-cheat-sheet">Commands Cheat Sheet</h2>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create Issue</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue create</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co"># List Issues</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue list</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co"># View Issue</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue view 1</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Close Issue</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue close 1</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Reopen Issue</span></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issue reopen 1</span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Create Pull Request</span></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr create</span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a><span class="co"># List Pull Requests</span></span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr list</span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a><span class="co"># View Pull Request</span></span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr view 3</span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Checkout Pull Request</span></span>
+<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr checkout 3</span>
+<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a><span class="co"># View Diff</span></span>
+<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr diff 3</span>
+<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-31"><a href="#cb49-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Approve PR</span></span>
+<span id="cb49-32"><a href="#cb49-32" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr review 3 <span class="at">--approve</span></span>
+<span id="cb49-33"><a href="#cb49-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-34"><a href="#cb49-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Request Changes</span></span>
+<span id="cb49-35"><a href="#cb49-35" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr review 3 <span class="at">--request-changes</span></span>
+<span id="cb49-36"><a href="#cb49-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-37"><a href="#cb49-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge PR</span></span>
+<span id="cb49-38"><a href="#cb49-38" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr merge 3 <span class="at">--merge</span></span>
+<span id="cb49-39"><a href="#cb49-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-40"><a href="#cb49-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Squash Merge</span></span>
+<span id="cb49-41"><a href="#cb49-41" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr merge 3 <span class="at">--squash</span></span>
+<span id="cb49-42"><a href="#cb49-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-43"><a href="#cb49-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Rebase Merge</span></span>
+<span id="cb49-44"><a href="#cb49-44" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr merge 3 <span class="at">--rebase</span></span></code></pre></div>
+
+  </div>
+</section>
+
+<hr class='part-divider'/>
+
+<section class="part" id="part3a">
+  <div class="part-banner">
+    <span class="part-tag">Part 3A</span>
+    <h1 class="part-title">GitHub Actions Workflows (gh workflow)</h1>
+  </div>
+
+  <div class="learn-box">
+    <div class="learn-box-head">🎯 What You'll Learn in This Part</div>
+    <ul><li>What GitHub Actions is and where workflow YAML files live</li>
+<li>How to list and inspect workflows with <code>gh workflow list / view</code></li>
+<li>Why <code>workflow_dispatch</code> is required to trigger a workflow manually</li>
+<li>How to pass inputs to a workflow using <code>-f field=value</code></li>
+<li>The difference between a <b>workflow</b> (definition) and a <b>workflow run</b> (execution)</li>
+<li>How to troubleshoot common errors: missing input, invalid choice, workflow not found</li></ul>
+  </div>
+
+  <div class="diagram-card">
+    <div class="diagram-label">✍️ Hand-drawn Recap Diagram</div>
+    <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg" class="handdrawn-diagram">
+<defs><filter id="sketchy" x="-8%" y="-8%" width="116%" height="116%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="3"/>
+  <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+<marker id="arrowhead3" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+<polygon points="0 0, 8 3.5, 0 7" fill="#2b3a55"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="900" height="300" fill="#fffdf6"/>
+<text x="30" y="35" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="22" fill="#2b3a55" font-weight="bold">Triggering a Workflow Manually ⚡</text><g filter="url(#sketchy)">
+<rect x="20" y="80" width="200" height="100" rx="10" fill="#118ab2" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="120.0" y="125.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">workflow.yml has:</text>
+<text x="120.0" y="147.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">on: workflow_dispatch</text>
+<g filter="url(#sketchy)">
+<rect x="250" y="80" width="200" height="100" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="350.0" y="125.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh workflow run</text>
+<text x="350.0" y="147.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">"Matrix Workflow" -f env=testing</text>
+<g filter="url(#sketchy)">
+<rect x="480" y="80" width="200" height="100" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="580.0" y="125.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">GitHub creates a</text>
+<text x="580.0" y="147.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">new Workflow Run</text>
+<g filter="url(#sketchy)">
+<rect x="700" y="80" width="200" height="100" rx="10" fill="#ef476f" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="800.0" y="125.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh run list</text>
+<text x="800.0" y="147.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">(verify it started)</text>
+<g filter="url(#sketchy)">
+<path d="M220 130.0 L250 130.0" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead3)"/>
+</g>
+<g filter="url(#sketchy)">
+<path d="M450 130.0 L480 130.0" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead3)"/>
+</g>
+<g filter="url(#sketchy)">
+<path d="M680 130.0 L700 130.0" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead3)"/>
+</g>
+<text x="450.0" y="225" text-anchor="middle" font-family="Patrick Hand, cursive" font-size="14" fill="#5b6b8c">Remember: one workflow file can have MANY workflow runs 📂</text></svg>
+  </div>
+
+  <div class="original-notes">
+    <div class="original-tag">📖 Original Notes — Part 3A (unchanged)</div>
+    <h2 id="day-26-github-cli-gh-notes-part-3a">Day 26 – GitHub CLI
+(<code>gh</code>) Notes (Part 3A)</h2>
+<h2 id="github-actions-workflows-with-github-cli">GitHub Actions
+Workflows with GitHub CLI</h2>
+<hr />
+<h2 id="what-is-github-actions">What is GitHub Actions?</h2>
+<p>GitHub Actions is GitHub’s built-in CI/CD platform.</p>
+<p>It allows you to automate tasks such as:</p>
+<ul>
+<li>Building applications</li>
+<li>Running tests</li>
+<li>Deploying applications</li>
+<li>Running scheduled jobs</li>
+<li>Automating DevOps workflows</li>
+</ul>
+<p>These automations are defined in <strong>workflow</strong> files.</p>
+<hr />
+<h2 id="what-is-a-workflow">What is a Workflow?</h2>
+<p>A workflow is a YAML file stored in:</p>
+<pre class="text"><code>.github/workflows/</code></pre>
+<p>Example:</p>
+<pre class="text"><code>.github/workflows/ci.yml</code></pre>
+<hr />
+<h2 id="example-workflow">Example Workflow</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> My First Workflow</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hello</span><span class="kw">:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">run</span><span class="kw">:</span><span class="at"> echo &quot;Hello GitHub Actions!&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="workflow-lifecycle">Workflow Lifecycle</h2>
+<pre class="text"><code>Workflow File
+      │
+      ▼
+GitHub Detects Trigger
+      │
+      ▼
+Creates Workflow Run
+      │
+      ▼
+Creates Jobs
+      │
+      ▼
+Runs Steps
+      │
+      ▼
+Completed</code></pre>
+<hr />
+<h2 id="list-workflows">List Workflows</h2>
+<h3 id="syntax">Syntax</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow list</span></code></pre></div>
+<p>Example:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow list</span></code></pre></div>
+<p>Output:</p>
+<pre class="text"><code>NAME                      STATE   ID
+My first github workflow  active  324404139
+Manual Trigger            active  329134277
+Matrix Workflow           active  329151867
+Pull request Demo         active  329109724
+Scheduled Trigger         active  329134278</code></pre>
+<hr />
+<h2 id="view-workflow-details">View Workflow Details</h2>
+<h3 id="by-name">By Name</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow view <span class="st">&quot;Matrix Workflow&quot;</span></span></code></pre></div>
+<hr />
+<h3 id="by-id">By ID</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow view 329151867</span></code></pre></div>
+<hr />
+<h2 id="view-workflow-yaml">View Workflow YAML</h2>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow view <span class="st">&quot;Matrix Workflow&quot;</span> <span class="at">--yaml</span></span></code></pre></div>
+<p>Example:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Matrix Workflow</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">workflow_dispatch</span><span class="kw">:</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">inputs</span><span class="kw">:</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">required</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">type</span><span class="kw">:</span><span class="at"> choice</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">options</span><span class="kw">:</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> testing</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> deploy</span></span></code></pre></div>
+<p>This command is extremely useful when you forget:</p>
+<ul>
+<li>workflow inputs</li>
+<li>triggers</li>
+<li>workflow name</li>
+<li>jobs</li>
+</ul>
+<hr />
+<h2 id="trigger-a-workflow">Trigger a Workflow</h2>
+<h3 id="syntax-1">Syntax</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="op">&lt;</span>workflow-name<span class="op">&gt;</span></span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="op">&lt;</span>workflow-file<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h2 id="example">Example</h2>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="st">&quot;Matrix Workflow&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="manual-trigger-requirement">Manual Trigger Requirement</h2>
+<p>A workflow <strong>must</strong> contain:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">workflow_dispatch</span><span class="kw">:</span></span></code></pre></div>
+<p>Without it, GitHub cannot start the workflow manually.</p>
+<hr />
+<h2 id="trigger-with-inputs">Trigger with Inputs</h2>
+<p>Your workflow:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">workflow_dispatch</span><span class="kw">:</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">inputs</span><span class="kw">:</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">required</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">type</span><span class="kw">:</span><span class="at"> choice</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">options</span><span class="kw">:</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> testing</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> deploy</span></span></code></pre></div>
+<p>Run:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="st">&quot;Matrix Workflow&quot;</span> <span class="dt">\</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>-f environment=testing</span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="st">&quot;Matrix Workflow&quot;</span> <span class="dt">\</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>-f environment=deploy</span></code></pre></div>
+<hr />
+<h2 id="common-error">Common Error</h2>
+<pre class="text"><code>HTTP 422
+
+Required input &#39;environment&#39; not provided</code></pre>
+<p>Reason:</p>
+<p>A required workflow input is missing.</p>
+<p>Fix:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="st">&quot;Matrix Workflow&quot;</span> <span class="dt">\</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>-f environment=testing</span></code></pre></div>
+<hr />
+<h2 id="another-common-error">Another Common Error</h2>
+<pre class="text"><code>Provided value &#39;testing&#39;
+not in the list of allowed values</code></pre>
+<p>Reason:</p>
+<p>The workflow only accepts specific values.</p>
+<p>Example:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span><span class="kw">:</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> dev</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> staging</span></span></code></pre></div>
+<p>Using:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">-f</span> environment=testing</span></code></pre></div>
+<p>will fail.</p>
+<p>Use:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">-f</span> environment=dev</span></code></pre></div>
+<p>instead.</p>
+<hr />
+<h2 id="run-workflow-by-file">Run Workflow by File</h2>
+<p>Instead of the workflow name:</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run matrix.yml <span class="dt">\</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>-f environment=testing</span></code></pre></div>
+<hr />
+<h2 id="run-workflow-by-id">Run Workflow by ID</h2>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run 329151867 <span class="dt">\</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>-f environment=testing</span></code></pre></div>
+<hr />
+<h2 id="verify-workflow-started">Verify Workflow Started</h2>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list</span></code></pre></div>
+<p>Example:</p>
+<pre class="text"><code>STATUS        WORKFLOW
+queued        Matrix Workflow
+
+or
+
+in_progress   Matrix Workflow</code></pre>
+<hr />
+<h2 id="real-devops-example">Real DevOps Example</h2>
+<p>A DevOps engineer needs to run a deployment manually.</p>
+<p>Workflow:</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow_dispatch</span><span class="kw">:</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">inputs</span><span class="kw">:</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">options</span><span class="kw">:</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> testing</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="kw">-</span><span class="at"> production</span></span></code></pre></div>
+<p>Run:</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run deploy.yml <span class="dt">\</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>-f environment=production</span></code></pre></div>
+<p>No need to open GitHub.</p>
+<p>Deployment starts immediately.</p>
+<hr />
+<h2 id="workflow-vs-workflow-run">Workflow vs Workflow Run</h2>
+<p>Workflow:</p>
+<pre class="text"><code>.github/workflows/deploy.yml</code></pre>
+<p>Workflow Run:</p>
+<pre class="text"><code>Execution #102
+Started:
+Today
+Status:
+Success</code></pre>
+<p>Think of it like this:</p>
+<pre class="text"><code>Workflow
+      │
+      ▼
+Workflow Run #1
+
+Workflow
+      │
+      ▼
+Workflow Run #2
+
+Workflow
+      │
+      ▼
+Workflow Run #3</code></pre>
+<p>One workflow can have thousands of runs.</p>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="workflow-not-found">Workflow Not Found</h3>
+<pre class="text"><code>could not find any workflows named ...</code></pre>
+<p>Fix:</p>
+<p>List workflows.</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow list</span></code></pre></div>
+<p>Copy the exact name.</p>
+<hr />
+<h3 id="missing-input">Missing Input</h3>
+<pre class="text"><code>Required input &#39;environment&#39;
+not provided</code></pre>
+<p>Fix:</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow view <span class="st">&quot;Workflow Name&quot;</span> <span class="at">--yaml</span></span></code></pre></div>
+<p>Check required inputs.</p>
+<p>Then run:</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="st">&quot;Workflow Name&quot;</span> <span class="dt">\</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>-f environment=testing</span></code></pre></div>
+<hr />
+<h3 id="invalid-choice">Invalid Choice</h3>
+<pre class="text"><code>Provided value
+not in allowed values</code></pre>
+<p>Fix:</p>
+<p>Use one of the options defined inside:</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow_dispatch</span><span class="kw">:</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">inputs</span><span class="kw">:</span></span></code></pre></div>
+<hr />
+<h2 id="useful-commands">Useful Commands</h2>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>List workflows</td>
+<td><code>gh workflow list</code></td>
+</tr>
+<tr class="even">
+<td>View workflow</td>
+<td><code>gh workflow view "Workflow"</code></td>
+</tr>
+<tr class="odd">
+<td>View YAML</td>
+<td><code>gh workflow view "Workflow" --yaml</code></td>
+</tr>
+<tr class="even">
+<td>Run workflow</td>
+<td><code>gh workflow run "Workflow"</code></td>
+</tr>
+<tr class="odd">
+<td>Run by file</td>
+<td><code>gh workflow run matrix.yml</code></td>
+</tr>
+<tr class="even">
+<td>Run with inputs</td>
+<td><code>gh workflow run "Workflow" -f environment=testing</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="interview-questions">Interview Questions</h2>
+<h3
+id="q1.-what-is-the-difference-between-a-workflow-and-a-workflow-run">Q1.
+What is the difference between a workflow and a workflow run?</h3>
+<p><strong>Answer</strong></p>
+<p>A workflow is the YAML definition stored in the repository.</p>
+<p>A workflow run is one execution of that workflow.</p>
+<hr />
+<h3 id="q2.-why-is-workflow_dispatch-required">Q2. Why is
+<code>workflow_dispatch</code> required?</h3>
+<p><strong>Answer</strong></p>
+<p><code>workflow_dispatch</code> enables manual execution of a
+workflow. Without it, <code>gh workflow run</code> cannot trigger the
+workflow.</p>
+<hr />
+<h3 id="q3.-how-do-you-pass-inputs-to-a-manually-triggered-workflow">Q3.
+How do you pass inputs to a manually triggered workflow?</h3>
+<p><strong>Answer</strong></p>
+<p>Use the <code>-f</code> (or <code>--field</code>) option.</p>
+<p>Example:</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run deploy.yml <span class="dt">\</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>-f environment=production</span></code></pre></div>
+<hr />
+<h2 id="commands-cheat-sheet">Commands Cheat Sheet</h2>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List workflows</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow list</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co"># View workflow</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow view <span class="st">&quot;Matrix Workflow&quot;</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="co"># View YAML</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow view <span class="st">&quot;Matrix Workflow&quot;</span> <span class="at">--yaml</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Run workflow</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="st">&quot;Matrix Workflow&quot;</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Run workflow with input</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="st">&quot;Matrix Workflow&quot;</span> <span class="dt">\</span></span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>-f environment=testing</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Run workflow by ID</span></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run 329151867 <span class="dt">\</span></span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>-f environment=testing</span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify workflow started</span></span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list</span></code></pre></div>
+
+  </div>
+</section>
+
+<hr class='part-divider'/>
+
+<section class="part" id="part3b">
+  <div class="part-banner">
+    <span class="part-tag">Part 3B</span>
+    <h1 class="part-title">GitHub Actions Runs (gh run)</h1>
+  </div>
+
+  <div class="learn-box">
+    <div class="learn-box-head">🎯 What You'll Learn in This Part</div>
+    <ul><li>How to list and filter workflow runs with <code>gh run list</code></li>
+<li>How to inspect a specific run and its matrix jobs with <code>--json jobs</code></li>
+<li>How to watch a run live with <code>gh run watch</code></li>
+<li>How to view full logs vs. only failed logs for debugging</li>
+<li>How to download build artifacts with <code>gh run download</code></li>
+<li>A repeatable 3-step troubleshooting method for failed CI runs</li></ul>
+  </div>
+
+  <div class="diagram-card">
+    <div class="diagram-label">✍️ Hand-drawn Recap Diagram</div>
+    <svg viewBox="0 0 700 560" xmlns="http://www.w3.org/2000/svg" class="handdrawn-diagram">
+<defs><filter id="sketchy" x="-8%" y="-8%" width="116%" height="116%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="4"/>
+  <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+<marker id="arrowhead4" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+<polygon points="0 0, 8 3.5, 0 7" fill="#2b3a55"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="700" height="560" fill="#fffdf6"/>
+<text x="30" y="35" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="22" fill="#2b3a55" font-weight="bold">Watching & Debugging a Run 🔍</text><g filter="url(#sketchy)"><circle cx="350" cy="300" r="150" fill="none" stroke="#5b6b8c" stroke-width="2" stroke-dasharray="5,6"/></g><g filter="url(#sketchy)">
+<rect x="255.0" y="110.0" width="190" height="80" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="350.0" y="156.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh run list</text>
+<g filter="url(#sketchy)">
+<rect x="405.0" y="260.0" width="190" height="80" rx="10" fill="#118ab2" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="500.0" y="306.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh run view <ID></text>
+<g filter="url(#sketchy)">
+<rect x="255.0" y="410.0" width="190" height="80" rx="10" fill="#ef476f" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="350.0" y="456.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh run view --log-failed</text>
+<g filter="url(#sketchy)">
+<rect x="105.0" y="260.0" width="190" height="80" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="200.0" y="295.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh run download</text>
+<text x="200.0" y="317.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">(artifacts)</text>
+<g filter="url(#sketchy)">
+<rect x="280" y="270" width="140" height="60" rx="10" fill="#fffdf6" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="350.0" y="295.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh run watch</text>
+<text x="350.0" y="317.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">(live)</text>
+</svg>
+  </div>
+
+  <div class="original-notes">
+    <div class="original-tag">📖 Original Notes — Part 3B (unchanged)</div>
+    <h2 id="day-26-github-cli-gh-notes-part-3b">Day 26 – GitHub CLI
+(<code>gh</code>) Notes (Part 3B)</h2>
+<h2 id="github-actions-runs-with-github-cli-gh-run">GitHub Actions Runs
+with GitHub CLI (<code>gh run</code>)</h2>
+<hr />
+<h2 id="what-is-a-workflow-run">What is a Workflow Run?</h2>
+<p>A <strong>workflow run</strong> is a single execution of a GitHub
+Actions workflow.</p>
+<p>Example:</p>
+<pre class="text"><code>Workflow: Matrix Workflow
+
+Run #1  ✓ Success
+Run #2  ✗ Failed
+Run #3  ✓ Success
+Run #4  ⏳ Running</code></pre>
+<p>One workflow can have thousands of runs.</p>
+<hr />
+<h2 id="workflow-vs-workflow-run">Workflow vs Workflow Run</h2>
+<pre class="text"><code>.github/workflows/matrix.yml
+            │
+            ▼
+      Workflow Definition
+            │
+            ▼
+ ┌───────────────────────────┐
+ │ Run #1                    │
+ │ Run #2                    │
+ │ Run #3                    │
+ │ Run #4                    │
+ └───────────────────────────┘</code></pre>
+<hr />
+<h2 id="list-workflow-runs">List Workflow Runs</h2>
+<h3 id="syntax">Syntax</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list</span></code></pre></div>
+<hr />
+<h3 id="example">Example</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list</span></code></pre></div>
+<p>Example Output</p>
+<pre class="text"><code>STATUS    TITLE              WORKFLOW         EVENT
+✓         Matrix Workflow    Matrix Workflow  workflow_dispatch
+✓         CI Pipeline        CI               push
+✗         Deploy             Deploy           workflow_dispatch</code></pre>
+<hr />
+<h2 id="list-runs-of-a-specific-workflow">List Runs of a Specific
+Workflow</h2>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list <span class="at">--workflow</span><span class="op">=</span><span class="st">&quot;Matrix Workflow&quot;</span></span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list <span class="at">--workflow</span><span class="op">=</span>matrix.yml</span></code></pre></div>
+<hr />
+<h2 id="limit-results">Limit Results</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list <span class="at">--limit</span> 5</span></code></pre></div>
+<hr />
+<h2 id="filter-by-branch">Filter by Branch</h2>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list <span class="at">--branch</span> main</span></code></pre></div>
+<hr />
+<h2 id="view-run-details">View Run Details</h2>
+<p>Suppose the Run ID is:</p>
+<pre class="text"><code>31183035527</code></pre>
+<p>View it:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view 31183035527</span></code></pre></div>
+<p>Example Output</p>
+<pre class="text"><code>Workflow : Matrix Workflow
+Status   : completed
+Conclusion : success
+Event    : workflow_dispatch
+Branch   : main
+Duration : 34 seconds</code></pre>
+<hr />
+<h2 id="view-jobs-in-the-run">View Jobs in the Run</h2>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view 31183035527 <span class="at">--json</span> jobs</span></code></pre></div>
+<p>Your matrix workflow:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">OS</span><span class="kw">:</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> windows-latest</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Python</span><span class="kw">:</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fl">3.10</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fl">3.11</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fl">3.12</span></span></code></pre></div>
+<p>Result:</p>
+<pre class="text"><code>✓ ubuntu-latest | Python 3.10
+✓ ubuntu-latest | Python 3.11
+✓ ubuntu-latest | Python 3.12
+
+✗ windows-latest | Python 3.10
+
+✓ windows-latest | Python 3.11
+✓ windows-latest | Python 3.12</code></pre>
+<p>Total Jobs</p>
+<pre class="text"><code>2 Operating Systems
+×
+
+3 Python Versions
+
+=
+
+6 Jobs</code></pre>
+<hr />
+<h2 id="watch-workflow-live">Watch Workflow Live</h2>
+<p>If a workflow is still running:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run watch</span></code></pre></div>
+<p>Watch a specific run:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run watch 31183035527</span></code></pre></div>
+<p>Useful during deployments.</p>
+<hr />
+<h2 id="view-logs">View Logs</h2>
+<p>All logs:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view 31183035527 <span class="at">--log</span></span></code></pre></div>
+<hr />
+<h2 id="view-only-failed-logs">View Only Failed Logs</h2>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view 31183035527 <span class="at">--log-failed</span></span></code></pre></div>
+<p>Very useful when debugging CI failures.</p>
+<hr />
+<h2 id="download-artifacts">Download Artifacts</h2>
+<p>If the workflow uploads artifacts:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run download 31183035527</span></code></pre></div>
+<p>Example</p>
+<p>Workflow uploads:</p>
+<pre class="text"><code>test-report.zip
+coverage.html
+build.tar.gz</code></pre>
+<p>Download:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run download 31183035527</span></code></pre></div>
+<p>Artifacts appear in the current directory.</p>
+<hr />
+<h2 id="open-run-in-browser">Open Run in Browser</h2>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view 31183035527 <span class="at">--web</span></span></code></pre></div>
+<hr />
+<h2 id="view-json-output">View JSON Output</h2>
+<p>Useful for automation.</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view 31183035527 <span class="dt">\</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>--json name,status,conclusion,event,createdAt,jobs</span></code></pre></div>
+<p>Example:</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a> <span class="dt">&quot;status&quot;</span><span class="fu">:</span><span class="st">&quot;completed&quot;</span><span class="fu">,</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a> <span class="dt">&quot;conclusion&quot;</span><span class="fu">:</span><span class="st">&quot;success&quot;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<hr />
+<h2 id="real-devops-scenario-1">Real DevOps Scenario 1</h2>
+<p>Developer triggers deployment.</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run deploy.yml <span class="dt">\</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>-f environment=production</span></code></pre></div>
+<p>Check status:</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list</span></code></pre></div>
+<p>Watch deployment:</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run watch</span></code></pre></div>
+<p>View logs:</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span> --log</span></code></pre></div>
+<hr />
+<h2 id="real-devops-scenario-2">Real DevOps Scenario 2</h2>
+<p>Nightly backup failed.</p>
+<p>Check latest workflow:</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list <span class="at">--limit</span> 5</span></code></pre></div>
+<p>View failed logs:</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span> --log-failed</span></code></pre></div>
+<p>Find error:</p>
+<pre class="text"><code>Disk Full</code></pre>
+<p>Fix server.</p>
+<p>Trigger workflow again.</p>
+<hr />
+<h2 id="real-devops-scenario-3">Real DevOps Scenario 3</h2>
+<p>A matrix build is testing:</p>
+<pre class="text"><code>Ubuntu
+Windows
+
+Python
+
+3.10
+3.11
+3.12</code></pre>
+<p>Expected Jobs</p>
+<pre class="text"><code>Ubuntu 3.10
+
+Ubuntu 3.11
+
+Ubuntu 3.12
+
+Windows 3.10
+
+Windows 3.11
+
+Windows 3.12</code></pre>
+<p>One job fails intentionally.</p>
+<p>Use:</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span> --json jobs</span></code></pre></div>
+<p>to identify exactly which job failed.</p>
+<hr />
+<h2 id="common-errors">Common Errors</h2>
+<hr />
+<h3 id="no-runs-found">No Runs Found</h3>
+<pre class="text"><code>no workflow runs found</code></pre>
+<p>Reason</p>
+<p>Workflow has never executed.</p>
+<p>Fix</p>
+<p>Run it first.</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow run <span class="st">&quot;Matrix Workflow&quot;</span> <span class="dt">\</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>-f environment=testing</span></code></pre></div>
+<hr />
+<h3 id="workflow-still-running">Workflow Still Running</h3>
+<pre class="text"><code>status:
+in_progress</code></pre>
+<p>Solution</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run watch</span></code></pre></div>
+<hr />
+<h3 id="artifact-missing">Artifact Missing</h3>
+<pre class="text"><code>No artifacts found</code></pre>
+<p>Reason</p>
+<p>Workflow never uploaded artifacts.</p>
+<p>Need:</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/upload-artifact</span></span></code></pre></div>
+<hr />
+<h2 id="useful-commands">Useful Commands</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>List runs</td>
+<td><code>gh run list</code></td>
+</tr>
+<tr class="even">
+<td>List runs of workflow</td>
+<td><code>gh run list --workflow=matrix.yml</code></td>
+</tr>
+<tr class="odd">
+<td>View run</td>
+<td><code>gh run view &lt;RUN_ID&gt;</code></td>
+</tr>
+<tr class="even">
+<td>View jobs</td>
+<td><code>gh run view &lt;RUN_ID&gt; --json jobs</code></td>
+</tr>
+<tr class="odd">
+<td>Watch run</td>
+<td><code>gh run watch &lt;RUN_ID&gt;</code></td>
+</tr>
+<tr class="even">
+<td>View logs</td>
+<td><code>gh run view &lt;RUN_ID&gt; --log</code></td>
+</tr>
+<tr class="odd">
+<td>View failed logs</td>
+<td><code>gh run view &lt;RUN_ID&gt; --log-failed</code></td>
+</tr>
+<tr class="even">
+<td>Download artifacts</td>
+<td><code>gh run download &lt;RUN_ID&gt;</code></td>
+</tr>
+<tr class="odd">
+<td>Open in browser</td>
+<td><code>gh run view &lt;RUN_ID&gt; --web</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="complete-workflow-monitoring">Complete Workflow Monitoring</h2>
+<pre class="text"><code>Trigger Workflow
+        │
+        ▼
+gh workflow run
+        │
+        ▼
+List Runs
+        │
+        ▼
+gh run list
+        │
+        ▼
+View Run
+        │
+        ▼
+gh run view
+        │
+        ▼
+View Jobs
+        │
+        ▼
+gh run view --json jobs
+        │
+        ▼
+Watch Live
+        │
+        ▼
+gh run watch
+        │
+        ▼
+View Logs
+        │
+        ▼
+gh run view --log
+        │
+        ▼
+Download Artifacts</code></pre>
+<hr />
+<h2 id="interview-questions">Interview Questions</h2>
+<h3 id="q1.-what-is-the-difference-between-gh-workflow-and-gh-run">Q1.
+What is the difference between <code>gh workflow</code> and
+<code>gh run</code>?</h3>
+<p><strong>Answer</strong></p>
+<ul>
+<li><code>gh workflow</code> manages workflow definitions (list, view,
+trigger).</li>
+<li><code>gh run</code> manages workflow executions (list runs, inspect
+jobs, view logs, download artifacts).</li>
+</ul>
+<hr />
+<h3
+id="q2.-how-do-you-identify-which-job-failed-in-a-matrix-workflow">Q2.
+How do you identify which job failed in a matrix workflow?</h3>
+<p><strong>Answer</strong></p>
+<p>Run:</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span> --json jobs</span></code></pre></div>
+<p>It displays every job in the matrix with its status and
+conclusion.</p>
+<hr />
+<h3
+id="q3.-how-do-you-troubleshoot-a-failed-github-actions-workflow">Q3.
+How do you troubleshoot a failed GitHub Actions workflow?</h3>
+<p><strong>Answer</strong></p>
+<ol type="1">
+<li>List recent runs with <code>gh run list</code>.</li>
+<li>View the run using <code>gh run view &lt;RUN_ID&gt;</code>.</li>
+<li>Check failed logs using
+<code>gh run view &lt;RUN_ID&gt; --log-failed</code>.</li>
+<li>Review the failing job and rerun the workflow after fixing the
+issue.</li>
+</ol>
+<hr />
+<h2 id="commands-cheat-sheet">Commands Cheat Sheet</h2>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List workflow runs</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># List last 5 runs</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list <span class="at">--limit</span> 5</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co"># List runs of one workflow</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run list <span class="at">--workflow</span><span class="op">=</span>matrix.yml</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="co"># View run</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="co"># View jobs</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span> --json jobs</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Watch live</span></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run watch <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a><span class="co"># View logs</span></span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span> --log</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a><span class="co"># View failed logs</span></span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span> --log-failed</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Download artifacts</span></span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run download <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span></span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Open in browser</span></span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> run view <span class="op">&lt;</span>RUN_ID<span class="op">&gt;</span> --web</span></code></pre></div>
+
+  </div>
+</section>
+
+<hr class='part-divider'/>
+
+<section class="part" id="part4a">
+  <div class="part-banner">
+    <span class="part-tag">Part 4A</span>
+    <h1 class="part-title">gh api & gh gist</h1>
+  </div>
+
+  <div class="learn-box">
+    <div class="learn-box-head">🎯 What You'll Learn in This Part</div>
+    <ul><li>How to call the raw GitHub REST API from the terminal with <code>gh api</code></li>
+<li>How to pretty-print JSON output using <code>jq</code></li>
+<li>Real automation uses: checking workflow runs, secrets, latest releases, collaborators</li>
+<li>What a GitHub Gist is and when to use one instead of a full repo</li>
+<li>How to create public vs secret gists, and the difference between them</li>
+<li>How a teammate can view, clone, and use a shared gist</li></ul>
+  </div>
+
+  <div class="diagram-card">
+    <div class="diagram-label">✍️ Hand-drawn Recap Diagram</div>
+    <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" class="handdrawn-diagram">
+<defs><filter id="sketchy" x="-8%" y="-8%" width="116%" height="116%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="5"/>
+  <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+<marker id="arrowhead5" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+<polygon points="0 0, 8 3.5, 0 7" fill="#2b3a55"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="900" height="420" fill="#fffdf6"/>
+<text x="30" y="35" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="22" fill="#2b3a55" font-weight="bold">gh api  +  gh gist 📡</text><g filter="url(#sketchy)">
+<rect x="30" y="60" width="220" height="80" rx="10" fill="#118ab2" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="140.0" y="95.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh api</text>
+<text x="140.0" y="117.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">repos/OWNER/REPO</text>
+<g filter="url(#sketchy)">
+<rect x="320" y="60" width="220" height="80" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="430.0" y="106.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">GitHub REST API</text>
+<g filter="url(#sketchy)">
+<rect x="610" y="60" width="260" height="80" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="740.0" y="95.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">JSON response</text>
+<text x="740.0" y="117.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">( pipe to | jq )</text>
+<g filter="url(#sketchy)">
+<path d="M250 100 L320 100" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead5)"/>
+</g>
+<g filter="url(#sketchy)">
+<path d="M540 100 L610 100" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead5)"/>
+</g>
+<g filter="url(#sketchy)">
+<rect x="30" y="240" width="220" height="80" rx="10" fill="#ef476f" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="140.0" y="275.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">deployment.yaml</text>
+<text x="140.0" y="297.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">(local file)</text>
+<g filter="url(#sketchy)">
+<rect x="320" y="240" width="260" height="80" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="450.0" y="275.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh gist create</text>
+<text x="450.0" y="297.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">--public -d "desc"</text>
+<g filter="url(#sketchy)">
+<rect x="650" y="240" width="220" height="80" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="760.0" y="275.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">Gist URL</text>
+<text x="760.0" y="297.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">share with teammate</text>
+<g filter="url(#sketchy)">
+<path d="M250 280 L320 280" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead5)"/>
+</g>
+<g filter="url(#sketchy)">
+<path d="M580 280 L650 280" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead5)"/>
+</g>
+<text x="30" y="370" font-family="Patrick Hand, cursive" font-size="14" fill="#5b6b8c">Public gist = visible on profile   |   Secret gist = link-only, hidden from profile</text></svg>
+  </div>
+
+  <div class="original-notes">
+    <div class="original-tag">📖 Original Notes — Part 4A (unchanged)</div>
+    <h2 id="day-26-github-cli-gh-notes-part-4a">Day 26 – GitHub CLI
+(<code>gh</code>) Notes (Part 4A)</h2>
+<h2 id="advanced-github-cli-commands">Advanced GitHub CLI Commands</h2>
+<h3 id="part-4a-gh-api-gh-gist">Part 4A – <code>gh api</code> &amp;
+<code>gh gist</code></h3>
+<hr />
+<h2 id="gh-api"><code>gh api</code></h2>
+<h3 id="what-is-gh-api">What is <code>gh api</code>?</h3>
+<p><code>gh api</code> allows you to make <strong>raw GitHub REST API
+requests</strong> directly from your terminal.</p>
+<p>Instead of opening the GitHub website, you can retrieve or update
+GitHub data using the GitHub API.</p>
+<p>It is commonly used in:</p>
+<ul>
+<li>DevOps automation</li>
+<li>Shell scripts</li>
+<li>CI/CD pipelines</li>
+<li>Monitoring</li>
+<li>Reporting</li>
+</ul>
+<hr />
+<h2 id="syntax">Syntax</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api <span class="op">&lt;</span>endpoint<span class="op">&gt;</span></span></code></pre></div>
+<p>Example:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api user</span></code></pre></div>
+<hr />
+<h2 id="get-your-github-profile">Get Your GitHub Profile</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api user</span></code></pre></div>
+<p>Example Output</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;login&quot;</span><span class="fu">:</span> <span class="st">&quot;alank8s-cloud-code&quot;</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;Alan&quot;</span><span class="fu">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;public_repos&quot;</span><span class="fu">:</span> <span class="dv">12</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<hr />
+<h2 id="list-your-repositories">List Your Repositories</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api user/repos</span></code></pre></div>
+<hr />
+<h2 id="view-repository-details">View Repository Details</h2>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/my_portfolio</span></code></pre></div>
+<hr />
+<h2 id="list-pull-requests">List Pull Requests</h2>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/my_portfolio/pulls</span></code></pre></div>
+<hr />
+<h2 id="list-issues">List Issues</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/my_portfolio/issues</span></code></pre></div>
+<hr />
+<h2 id="list-workflow-runs">List Workflow Runs</h2>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/github-actions-practice/actions/runs</span></code></pre></div>
+<hr />
+<h2 id="list-repository-secrets">List Repository Secrets</h2>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/github-actions-practice/actions/secrets</span></code></pre></div>
+<p>Example Output</p>
+<pre class="text"><code>DATABASE_URL
+AWS_ACCESS_KEY
+DOCKER_USERNAME</code></pre>
+<blockquote>
+<p><strong>Note:</strong> GitHub only returns the <strong>names</strong>
+of secrets, never their values.</p>
+</blockquote>
+<hr />
+<h2 id="get-latest-release">Get Latest Release</h2>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/my_portfolio/releases/latest</span></code></pre></div>
+<hr />
+<h2 id="list-collaborators">List Collaborators</h2>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/my_portfolio/collaborators</span></code></pre></div>
+<hr />
+<h2 id="pretty-print-json">Pretty Print JSON</h2>
+<p>Use <code>jq</code> to format JSON output.</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api user <span class="kw">|</span> <span class="ex">jq</span></span></code></pre></div>
+<p>Example</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;login&quot;</span><span class="fu">:</span> <span class="st">&quot;alank8s-cloud-code&quot;</span><span class="fu">,</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;followers&quot;</span><span class="fu">:</span> <span class="dv">20</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<hr />
+<h2 id="real-devops-example-1">Real DevOps Example 1</h2>
+<p>Check the latest workflow runs every morning.</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/github-actions-practice/actions/runs</span></code></pre></div>
+<hr />
+<h2 id="real-devops-example-2">Real DevOps Example 2</h2>
+<p>Check whether production secrets exist.</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/github-actions-practice/actions/secrets</span></code></pre></div>
+<hr />
+<h2 id="real-devops-example-3">Real DevOps Example 3</h2>
+<p>Generate a deployment report.</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/alank8s-cloud-code/my_portfolio/releases/latest</span></code></pre></div>
+<hr />
+<h2 id="gh-gist"><code>gh gist</code></h2>
+<hr />
+<h2 id="what-is-a-gist">What is a Gist?</h2>
+<p>A <strong>GitHub Gist</strong> is a lightweight Git repository used
+to share:</p>
+<ul>
+<li>Scripts</li>
+<li>YAML files</li>
+<li>Docker Compose files</li>
+<li>Terraform code</li>
+<li>Notes</li>
+<li>Configuration files</li>
+</ul>
+<p>Think of it as a <strong>mini GitHub repository</strong> for small
+projects or code snippets.</p>
+<hr />
+<h2 id="syntax-1">Syntax</h2>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create <span class="op">&lt;</span>file<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h2 id="create-a-public-gist">Create a Public Gist</h2>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create deployment.yaml <span class="at">--public</span></span></code></pre></div>
+<p>Example Output</p>
+<pre class="text"><code>✓ Created public gist
+
+https://gist.github.com/alank8s-cloud-code/abc1234567890abcdef</code></pre>
+<hr />
+<h2 id="add-a-description">Add a Description</h2>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create deployment.yaml <span class="dt">\</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>--public <span class="dt">\</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>-d <span class="st">&quot;Nginx Kubernetes Deployment&quot;</span></span></code></pre></div>
+<h4 id="what-is--d">What is <code>-d</code>?</h4>
+<p><code>-d</code> stands for <strong>description</strong>.</p>
+<p>It adds a short title or explanation to your Gist so others
+understand its purpose.</p>
+<hr />
+<h2 id="create-a-secret-gist">Create a Secret Gist</h2>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create backup.sh</span></code></pre></div>
+<p>Secret Gists are <strong>not listed on your public GitHub
+profile</strong>, but anyone with the link can access them.</p>
+<hr />
+<h2 id="list-your-gists">List Your Gists</h2>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist list</span></code></pre></div>
+<p>Example</p>
+<pre class="text"><code>ID           VISIBILITY
+abc123456    public
+xyz456789    secret</code></pre>
+<hr />
+<h2 id="view-a-gist">View a Gist</h2>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist view abc123456</span></code></pre></div>
+<p>Open it in your browser:</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist view abc123456 <span class="at">--web</span></span></code></pre></div>
+<hr />
+<h2 id="how-your-teammate-uses-your-gist">How Your Teammate Uses Your
+Gist</h2>
+<p>You create:</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create deployment.yaml <span class="dt">\</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>--public <span class="dt">\</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>-d <span class="st">&quot;Nginx Deployment&quot;</span></span></code></pre></div>
+<p>GitHub returns:</p>
+<pre class="text"><code>https://gist.github.com/alank8s-cloud-code/abc1234567890abcdef</code></pre>
+<p>Share this link with your teammate.</p>
+<p>They can:</p>
+<ul>
+<li>View the code</li>
+<li>Copy the code</li>
+<li>Download the file</li>
+<li>Clone the Gist</li>
+</ul>
+<hr />
+<h2 id="clone-the-gist">Clone the Gist</h2>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://gist.github.com/abc1234567890abcdef.git</span></code></pre></div>
+<p>Example</p>
+<pre class="text"><code>deployment.yaml</code></pre>
+<p>Deploy it:</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> apply <span class="at">-f</span> deployment.yaml</span></code></pre></div>
+<hr />
+<h2 id="real-devops-example-1-1">Real DevOps Example 1</h2>
+<p>Share a Kubernetes deployment.</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create deployment.yaml <span class="dt">\</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>--public <span class="dt">\</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>-d <span class="st">&quot;Production Kubernetes Deployment&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="real-devops-example-2-1">Real DevOps Example 2</h2>
+<p>Share a Docker Compose file.</p>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create docker-compose.yml <span class="dt">\</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>--public <span class="dt">\</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>-d <span class="st">&quot;Jenkins Docker Compose&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="real-devops-example-3-1">Real DevOps Example 3</h2>
+<p>Share a GitHub Actions workflow.</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create .github/workflows/ci.yml <span class="dt">\</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>--public <span class="dt">\</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>-d <span class="st">&quot;CI Pipeline&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="real-devops-example-4">Real DevOps Example 4</h2>
+<p>Share a Bash script.</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create backup.sh <span class="dt">\</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>--public <span class="dt">\</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>-d <span class="st">&quot;Nightly Backup Script&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="public-vs-secret-gist">Public vs Secret Gist</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Public</th>
+<th>Secret</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Visible on your profile</td>
+<td>Not visible on your profile</td>
+</tr>
+<tr class="even">
+<td>Anyone can discover it</td>
+<td>Only people with the link can access it</td>
+</tr>
+<tr class="odd">
+<td>Suitable for open-source examples</td>
+<td>Suitable for sharing privately with teammates</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="useful-commands">Useful Commands</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Create Gist</td>
+<td><code>gh gist create file</code></td>
+</tr>
+<tr class="even">
+<td>Public Gist</td>
+<td><code>gh gist create file --public</code></td>
+</tr>
+<tr class="odd">
+<td>Add description</td>
+<td><code>gh gist create file -d "Description"</code></td>
+</tr>
+<tr class="even">
+<td>List Gists</td>
+<td><code>gh gist list</code></td>
+</tr>
+<tr class="odd">
+<td>View Gist</td>
+<td><code>gh gist view &lt;GIST_ID&gt;</code></td>
+</tr>
+<tr class="even">
+<td>Open in browser</td>
+<td><code>gh gist view &lt;GIST_ID&gt; --web</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="interview-questions">Interview Questions</h2>
+<h3 id="q1.-what-is-the-purpose-of-gh-api">Q1. What is the purpose of
+<code>gh api</code>?</h3>
+<p><strong>Answer</strong></p>
+<p><code>gh api</code> allows developers to interact directly with
+GitHub’s REST API from the command line. It is commonly used for
+automation, scripting, and integrating GitHub operations into CI/CD
+pipelines.</p>
+<hr />
+<h3 id="q2.-what-is-a-github-gist">Q2. What is a GitHub Gist?</h3>
+<p><strong>Answer</strong></p>
+<p>A GitHub Gist is a lightweight Git repository used to share code
+snippets, scripts, configuration files, and documentation without
+creating a full GitHub repository.</p>
+<hr />
+<h3 id="q3.-what-does-the--d-option-do-when-creating-a-gist">Q3. What
+does the <code>-d</code> option do when creating a Gist?</h3>
+<p><strong>Answer</strong></p>
+<p>The <code>-d</code> (description) option adds a short description to
+the Gist, making it easier for others to understand its purpose.</p>
+<hr />
+<h2 id="commands-cheat-sheet">Commands Cheat Sheet</h2>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GitHub API</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api user</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api user/repos</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/OWNER/REPO</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/OWNER/REPO/issues</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/OWNER/REPO/pulls</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/OWNER/REPO/actions/runs</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/OWNER/REPO/actions/secrets</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api repos/OWNER/REPO/releases/latest</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Pretty print JSON</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> api user <span class="kw">|</span> <span class="ex">jq</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Gists</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create file</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create file <span class="at">--public</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist create file <span class="at">--public</span> <span class="at">-d</span> <span class="st">&quot;Description&quot;</span></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist list</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist view <span class="op">&lt;</span>GIST_ID<span class="op">&gt;</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> gist view <span class="op">&lt;</span>GIST_ID<span class="op">&gt;</span> --web</span></code></pre></div>
+
+  </div>
+</section>
+
+<hr class='part-divider'/>
+
+<section class="part" id="part4b">
+  <div class="part-banner">
+    <span class="part-tag">Part 4B</span>
+    <h1 class="part-title">gh release, gh alias & gh search repos</h1>
+  </div>
+
+  <div class="learn-box">
+    <div class="learn-box-head">🎯 What You'll Learn in This Part</div>
+    <ul><li>What a GitHub Release is and how it relates to a Git tag</li>
+<li>How to create a release, attach binaries, and publish notes</li>
+<li>How to create, list, and delete custom command aliases to save typing</li>
+<li>How to search public repositories from the terminal with <code>gh search repos</code></li>
+<li>How to combine search filters (e.g. language, keywords) to find real DevOps examples</li></ul>
+  </div>
+
+  <div class="diagram-card">
+    <div class="diagram-label">✍️ Hand-drawn Recap Diagram</div>
+    <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" class="handdrawn-diagram">
+<defs><filter id="sketchy" x="-8%" y="-8%" width="116%" height="116%">
+  <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" result="noise" seed="6"/>
+  <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+<marker id="arrowhead6" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+<polygon points="0 0, 8 3.5, 0 7" fill="#2b3a55"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="900" height="480" fill="#fffdf6"/>
+<text x="30" y="35" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="22" fill="#2b3a55" font-weight="bold">Releases, Aliases & Repo Search 🚀</text><g filter="url(#sketchy)">
+<rect x="30" y="60" width="180" height="70" rx="10" fill="#118ab2" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="120.0" y="101.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">git tag v1.0.0</text>
+<g filter="url(#sketchy)">
+<rect x="250" y="60" width="240" height="70" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="370.0" y="90.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="12" fill="#2b3a55">gh release create v1.0.0</text>
+<text x="370.0" y="112.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="12" fill="#2b3a55">app.tar.gz --notes "..."</text>
+<g filter="url(#sketchy)">
+<rect x="530" y="60" width="240" height="70" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="650.0" y="90.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">Users download</text>
+<text x="650.0" y="112.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">release from GitHub</text>
+<g filter="url(#sketchy)">
+<path d="M210 95 L250 95" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead6)"/>
+</g>
+<g filter="url(#sketchy)">
+<path d="M490 95 L530 95" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead6)"/>
+</g>
+<g filter="url(#sketchy)">
+<rect x="30" y="190" width="240" height="70" rx="10" fill="#ef476f" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="150.0" y="220.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">Long command:</text>
+<text x="150.0" y="242.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh workflow list</text>
+<g filter="url(#sketchy)">
+<rect x="310" y="190" width="220" height="70" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="420.0" y="220.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh alias set wf</text>
+<text x="420.0" y="242.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">"workflow list"</text>
+<g filter="url(#sketchy)">
+<rect x="570" y="190" width="200" height="70" rx="10" fill="#06d6a0" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="670.0" y="220.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">Now just:</text>
+<text x="670.0" y="242.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="14" fill="#2b3a55">gh wf</text>
+<g filter="url(#sketchy)">
+<path d="M270 225 L310 225" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead6)"/>
+</g>
+<g filter="url(#sketchy)">
+<path d="M530 225 L570 225" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead6)"/>
+</g>
+<g filter="url(#sketchy)">
+<rect x="30" y="320" width="240" height="70" rx="10" fill="#118ab2" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="150.0" y="350.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">gh search repos</text>
+<text x="150.0" y="372.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="13" fill="#2b3a55">"terraform aws"</text>
+<g filter="url(#sketchy)">
+<rect x="310" y="320" width="460" height="70" rx="10" fill="#ffd166" stroke="#2b3a55" stroke-width="2.5"/>
+</g>
+<text x="540.0" y="350.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="12" fill="#2b3a55">List of matching public repos</text>
+<text x="540.0" y="372.0" text-anchor="middle" font-family="Patrick Hand, Comic Sans MS, cursive" font-size="12" fill="#2b3a55">(kubernetes/kubernetes, helm/helm ...)</text>
+<g filter="url(#sketchy)">
+<path d="M270 355 L310 355" stroke="#2b3a55" stroke-width="2.5" fill="none"  marker-end="url(#arrowhead6)"/>
+</g>
+</svg>
+  </div>
+
+  <div class="original-notes">
+    <div class="original-tag">📖 Original Notes — Part 4B (unchanged)</div>
+    <h2 id="day-26-github-cli-gh-notes-part-4b">Day 26 – GitHub CLI
+(<code>gh</code>) Notes (Part 4B)</h2>
+<h2 id="advanced-github-cli-commands">Advanced GitHub CLI Commands</h2>
+<h3 id="part-4b-gh-release-gh-alias-gh-search-repos">Part 4B –
+<code>gh release</code>, <code>gh alias</code>,
+<code>gh search repos</code></h3>
+<hr />
+<h2 id="gh-release"><code>gh release</code></h2>
+<h3 id="what-is-a-release">What is a Release?</h3>
+<p>A <strong>GitHub Release</strong> is a published version of your
+project.</p>
+<p>It is typically used to distribute:</p>
+<ul>
+<li>Application binaries</li>
+<li>Docker image information</li>
+<li>Source code snapshots</li>
+<li>Release notes</li>
+<li>Production versions</li>
+</ul>
+<p>A release is usually created from a <strong>Git tag</strong>.</p>
+<p>Example:</p>
+<pre class="text"><code>v1.0.0
+v1.1.0
+v2.0.0</code></pre>
+<hr />
+<h2 id="real-devops-workflow">Real DevOps Workflow</h2>
+<pre class="text"><code>Developer
+    │
+    ▼
+Code Complete
+    │
+    ▼
+Create Git Tag
+    │
+    ▼
+Push Tag
+    │
+    ▼
+Create GitHub Release
+    │
+    ▼
+Users Download Release</code></pre>
+<hr />
+<h2 id="create-a-release">Create a Release</h2>
+<h3 id="syntax">Syntax</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release create <span class="op">&lt;</span>tag<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="example">Example</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release create v1.0.0 <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>--title <span class="st">&quot;Production Release v1.0.0&quot;</span> <span class="dt">\</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>--notes <span class="st">&quot;Initial production release.&quot;</span></span></code></pre></div>
+<p>Example Output</p>
+<pre class="text"><code>✓ Created release v1.0.0</code></pre>
+<hr />
+<h2 id="attach-files-to-a-release">Attach Files to a Release</h2>
+<p>Example:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release create v1.1.0 app.tar.gz <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>--title <span class="st">&quot;Application Release&quot;</span> <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>--notes <span class="st">&quot;Production build&quot;</span></span></code></pre></div>
+<p>Uploaded file:</p>
+<pre class="text"><code>app.tar.gz</code></pre>
+<hr />
+<h2 id="list-releases">List Releases</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release list</span></code></pre></div>
+<p>Example</p>
+<pre class="text"><code>v1.1.0
+v1.0.0</code></pre>
+<hr />
+<h2 id="view-release-details">View Release Details</h2>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release view v1.0.0</span></code></pre></div>
+<hr />
+<h2 id="open-release-in-browser">Open Release in Browser</h2>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release view v1.0.0 <span class="at">--web</span></span></code></pre></div>
+<hr />
+<h2 id="delete-a-release">Delete a Release</h2>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release delete v1.0.0</span></code></pre></div>
+<hr />
+<h2 id="real-devops-example">Real DevOps Example</h2>
+<p>Your CI/CD pipeline builds:</p>
+<pre class="text"><code>my-app.tar.gz</code></pre>
+<p>Publish it:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release create v2.0.0 my-app.tar.gz <span class="dt">\</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>--title <span class="st">&quot;Production Release&quot;</span> <span class="dt">\</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>--notes <span class="st">&quot;Security updates included.&quot;</span></span></code></pre></div>
+<p>Users can now download the release from GitHub.</p>
+<hr />
+<h2 id="gh-alias"><code>gh alias</code></h2>
+<hr />
+<h2 id="what-is-an-alias">What is an Alias?</h2>
+<p>An alias is a shortcut for a GitHub CLI command.</p>
+<p>Instead of typing long commands repeatedly, create a short
+command.</p>
+<hr />
+<h2 id="create-an-alias">Create an Alias</h2>
+<h3 id="syntax-1">Syntax</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set <span class="op">&lt;</span>alias<span class="op">&gt;</span> <span class="st">&quot;&lt;command&gt;&quot;</span></span></code></pre></div>
+<hr />
+<h3 id="example-1">Example 1</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set prs <span class="st">&quot;pr list&quot;</span></span></code></pre></div>
+<p>Now run:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> prs</span></code></pre></div>
+<p>Equivalent to:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> pr list</span></code></pre></div>
+<hr />
+<h3 id="example-2">Example 2</h3>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set runs <span class="st">&quot;run list&quot;</span></span></code></pre></div>
+<p>Use:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> runs</span></code></pre></div>
+<hr />
+<h3 id="example-3">Example 3</h3>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set issues <span class="st">&quot;issue list&quot;</span></span></code></pre></div>
+<p>Use:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issues</span></code></pre></div>
+<hr />
+<h3 id="example-4">Example 4</h3>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set wf <span class="st">&quot;workflow list&quot;</span></span></code></pre></div>
+<p>Use:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> wf</span></code></pre></div>
+<hr />
+<h2 id="list-aliases">List Aliases</h2>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias list</span></code></pre></div>
+<p>Example Output</p>
+<pre class="text"><code>prs: pr list
+runs: run list
+issues: issue list
+wf: workflow list</code></pre>
+<hr />
+<h2 id="delete-an-alias">Delete an Alias</h2>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias delete prs</span></code></pre></div>
+<hr />
+<h2 id="real-devops-example-1">Real DevOps Example</h2>
+<p>Instead of typing:</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> workflow list</span></code></pre></div>
+<p>Every day, create:</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set wf <span class="st">&quot;workflow list&quot;</span></span></code></pre></div>
+<p>Now simply run:</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> wf</span></code></pre></div>
+<hr />
+<h2 id="gh-search-repos"><code>gh search repos</code></h2>
+<hr />
+<h2 id="what-is-gh-search-repos">What is
+<code>gh search repos</code>?</h2>
+<p>This command searches public GitHub repositories directly from your
+terminal.</p>
+<p>Useful for finding:</p>
+<ul>
+<li>Open-source projects</li>
+<li>DevOps examples</li>
+<li>Kubernetes manifests</li>
+<li>Terraform modules</li>
+<li>Docker examples</li>
+<li>GitHub Actions workflows</li>
+</ul>
+<hr />
+<h2 id="syntax-2">Syntax</h2>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;&lt;keyword&gt;&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="search-kubernetes-projects">Search Kubernetes Projects</h2>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos kubernetes</span></code></pre></div>
+<hr />
+<h2 id="search-docker-compose-examples">Search Docker Compose
+Examples</h2>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;docker compose&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="search-terraform-projects">Search Terraform Projects</h2>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;terraform aws&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="search-github-actions-examples">Search GitHub Actions
+Examples</h2>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;github-actions language:YAML&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="search-helm-charts">Search Helm Charts</h2>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;helm charts&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="search-jenkins-pipelines">Search Jenkins Pipelines</h2>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos jenkinsfile</span></code></pre></div>
+<hr />
+<h2 id="search-cicd-projects">Search CI/CD Projects</h2>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;ci cd&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="limit-results">Limit Results</h2>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos kubernetes <span class="at">--limit</span> 5</span></code></pre></div>
+<p>Example Output</p>
+<pre class="text"><code>kubernetes/kubernetes
+kubernetes/minikube
+kubernetes/dashboard
+kubernetes/website
+helm/helm</code></pre>
+<hr />
+<h2 id="real-devops-examples">Real DevOps Examples</h2>
+<h3 id="find-kubernetes-examples">Find Kubernetes Examples</h3>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos kubernetes <span class="at">--limit</span> 10</span></code></pre></div>
+<hr />
+<h3 id="find-terraform-modules">Find Terraform Modules</h3>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;terraform aws&quot;</span></span></code></pre></div>
+<hr />
+<h3 id="find-github-actions-templates">Find GitHub Actions
+Templates</h3>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;github-actions language:YAML&quot;</span></span></code></pre></div>
+<hr />
+<h3 id="find-docker-projects">Find Docker Projects</h3>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;docker compose&quot;</span></span></code></pre></div>
+<hr />
+<h3 id="find-jenkins-examples">Find Jenkins Examples</h3>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos jenkinsfile</span></code></pre></div>
+<hr />
+<h2 id="useful-commands">Useful Commands</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Create release</td>
+<td><code>gh release create v1.0.0</code></td>
+</tr>
+<tr class="even">
+<td>List releases</td>
+<td><code>gh release list</code></td>
+</tr>
+<tr class="odd">
+<td>View release</td>
+<td><code>gh release view v1.0.0</code></td>
+</tr>
+<tr class="even">
+<td>Delete release</td>
+<td><code>gh release delete v1.0.0</code></td>
+</tr>
+<tr class="odd">
+<td>Create alias</td>
+<td><code>gh alias set prs "pr list"</code></td>
+</tr>
+<tr class="even">
+<td>List aliases</td>
+<td><code>gh alias list</code></td>
+</tr>
+<tr class="odd">
+<td>Delete alias</td>
+<td><code>gh alias delete prs</code></td>
+</tr>
+<tr class="even">
+<td>Search repositories</td>
+<td><code>gh search repos kubernetes</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="real-devops-workflow-1">Real DevOps Workflow</h2>
+<pre class="text"><code>Application Ready
+        │
+        ▼
+Create Git Tag
+        │
+        ▼
+Create GitHub Release
+        │
+        ▼
+Publish Binary
+        │
+        ▼
+Users Download</code></pre>
+<hr />
+<h2 id="interview-questions">Interview Questions</h2>
+<h3 id="q1.-what-is-the-purpose-of-a-github-release">Q1. What is the
+purpose of a GitHub Release?</h3>
+<p><strong>Answer</strong></p>
+<p>A GitHub Release packages a specific version of a project, usually
+associated with a Git tag. It allows developers to publish release notes
+and attach build artifacts for users to download.</p>
+<hr />
+<h3 id="q2.-why-would-you-create-github-cli-aliases">Q2. Why would you
+create GitHub CLI aliases?</h3>
+<p><strong>Answer</strong></p>
+<p>Aliases save time by replacing long or frequently used commands with
+shorter custom commands, improving productivity.</p>
+<hr />
+<h3 id="q3.-how-can-gh-search-repos-help-a-devops-engineer">Q3. How can
+<code>gh search repos</code> help a DevOps engineer?</h3>
+<p><strong>Answer</strong></p>
+<p>It helps quickly discover open-source repositories, CI/CD examples,
+Kubernetes manifests, Terraform modules, Docker Compose projects, and
+other reusable resources directly from the terminal.</p>
+<hr />
+<h2 id="commands-cheat-sheet">Commands Cheat Sheet</h2>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Releases</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release create v1.0.0</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release create v1.0.0 app.tar.gz <span class="dt">\</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--title</span> <span class="st">&quot;Production Release&quot;</span> <span class="dt">\</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--notes</span> <span class="st">&quot;Initial release&quot;</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release list</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release view v1.0.0</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release view v1.0.0 <span class="at">--web</span></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> release delete v1.0.0</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Aliases</span></span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set prs <span class="st">&quot;pr list&quot;</span></span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set runs <span class="st">&quot;run list&quot;</span></span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set wf <span class="st">&quot;workflow list&quot;</span></span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias set issues <span class="st">&quot;issue list&quot;</span></span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> prs</span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> runs</span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> wf</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> issues</span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias list</span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> alias delete prs</span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Repository Search</span></span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos kubernetes</span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;docker compose&quot;</span></span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;terraform aws&quot;</span></span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;github-actions language:YAML&quot;</span></span>
+<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos jenkinsfile</span>
+<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;helm charts&quot;</span></span>
+<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos <span class="st">&quot;ci cd&quot;</span></span>
+<span id="cb47-34"><a href="#cb47-34" aria-hidden="true" tabindex="-1"></a><span class="ex">gh</span> search repos kubernetes <span class="at">--limit</span> 5</span></code></pre></div>
+
+  </div>
+</section>
+
+
+  <div class="footer-note">
+    ✌️ All original notes content preserved exactly as written — only the "What You'll Learn" boxes and hand-drawn diagrams were added for revision.
+  </div>
+
+</div>
+</body>
+</html>
